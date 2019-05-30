@@ -2,13 +2,15 @@ module Nat where
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
-open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _≡⟨_⟩_; _∎)
 
 data ℕ : Set where
   zero : ℕ
   suc  : ℕ -> ℕ
 
-{-# BUILTIN NATURAL ℕ #-}
+
+infixl 6  _+_  _∸_
+infixl 7  _*_
 
 _+_ : ℕ → ℕ → ℕ
 zero + n = n
@@ -17,6 +19,11 @@ zero + n = n
 _*_ : ℕ → ℕ → ℕ
 zero  * n  =  zero
 suc m * n  =  n + (m * n)
+
+{-# BUILTIN NATURAL ℕ #-}
+{-# BUILTIN NATPLUS _+_ #-}
+{-# BUILTIN NATTIMES _*_ #-}
+
 
 _^_ : ℕ -> ℕ -> ℕ
 n ^ zero = 1
@@ -37,17 +44,50 @@ ex2 =
   begin
     3 + 4
   ≡⟨⟩
+    suc (2 + 4)
+  ≡⟨ etc ⟩
     suc (suc (suc (0 + 4)))
   ≡⟨⟩
     7
   ∎
+  where
+  etc : _
+  etc = refl
 
+-- Compute 3 * 4, writing out your reasoning as a chain of equations.
 ex3 : 3 * 4 ≡ 12
-ex3 = refl
+ex3 =
+  begin
+    3 * 4
+  ≡⟨⟩
+    4 + (2 * 4)
+  ≡⟨ etc ⟩
+    4 + (4 + (4 + (0 * 4)))
+  ≡⟨⟩
+    12
+  ∎
+  where
+  etc : _
+  etc = refl
 
+-- Define exponentiation.
+-- Check that 3 ^ 4 is 81.
 ex4 : 3 ^ 4 ≡ 81
-ex4 = refl
+ex4 =
+  begin
+    3 ^ 4
+  ≡⟨⟩
+    3 * (3 ^ 3)
+  ≡⟨ etc ⟩
+    3 * (3 * (3 * (3 * (3 ^ 0))))
+  ≡⟨⟩
+    81
+  ∎
+  where
+  etc : _
+  etc = refl
 
+-- Compute 5 ∸ 3 and 3 ∸ 5
 ex5 : 5 ∸ 3 ≡ 2
 ex5 = refl
 
