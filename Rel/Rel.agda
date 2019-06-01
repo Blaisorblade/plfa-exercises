@@ -111,3 +111,60 @@ data _<_ : ℕ → ℕ → Set where
 <-trans : ∀ (m n p : ℕ) -> m < n -> n < p -> m < p
 <-trans zero n (suc p) pf1 pf2 = z<s
 <-trans (suc m) (suc n) (suc p) (s<s pf1) (s<s pf2) = s<s (<-trans m n p pf1 pf2)
+
+--exercise: Show that strict inequality satisfies a weak version of trichotomy
+
+data Trichotomy (m n : ℕ) : Set where
+  less : m < n -> Trichotomy m n
+  equal : m ≡ n -> Trichotomy m n
+  greater : n < m -> Trichotomy m n
+
+<-trichotomy : ∀ (m n : ℕ) -> Trichotomy m n
+<-trichotomy zero zero = equal refl
+<-trichotomy zero (suc n) = less z<s
+<-trichotomy (suc m) zero = greater z<s
+<-trichotomy (suc m) (suc n) with <-trichotomy m n
+<-trichotomy (suc m) (suc n) | less x = less (s<s x)
+<-trichotomy (suc m) (suc n) | equal x = equal (cong suc x)
+<-trichotomy (suc m) (suc n) | greater x = greater (s<s x)
+ 
+-- exercise: Show that addition is monotonic with respect to strict inequality
+<-suc : ∀ (n : ℕ) -> n < suc n
+<-suc zero = z<s
+<-suc (suc n) = s<s (<-suc n)
+  
++-mono-< : ∀ (m n p q : ℕ) -> m < n -> p < q -> m + p < n + q
++-mono-< m n p q p1 p2 = {!<-trans (+-mono-<-L m n p1!}
+  
++-mono-<-R : ∀ (m p q : ℕ) -> p < q -> m + p < m + q
++-mono-<-R zero p q pf1 = pf1
++-mono-<-R (suc m) p q pf1 = s<s (+-mono-<-R m p q pf1)
+
+
++-mono-<-L : ∀ (m n q : ℕ) -> m < n -> m + q < n + q
++-mono-<-L m n q pf rewrite +-comm m q | +-comm n q = +-mono-<-R q m n pf
+
+--exercise: Show that suc m ≤ n implies m < n, and conversely.
+≤-iff-<-1 : ∀ (m n : ℕ) -> suc m ≤ n -> m < n
+≤-iff-<-1 zero (suc n) pf = z<s
+≤-iff-<-1 (suc m) (suc n) (s≤s pf) = s<s (≤-iff-<-1 m n pf)
+
+
+≤-iff-<-2 : ∀ (m n : ℕ) -> m < n -> suc m ≤ n
+≤-iff-<-2 zero (suc n) pf = s≤s z≤n
+≤-iff-<-2 (suc m) (suc n) (s<s pf) = s≤s (≤-iff-<-2 m n pf)
+
+≤-succ : ∀ (n : ℕ) -> n ≤ (suc n)
+≤-succ zero = z≤n
+≤-succ (suc n) = s≤s (≤-succ n)
+
+-- exercise : Give an alternative proof that strict inequality is transitive,
+-- using the relation between strict inequality and inequality and the fact
+-- that inequality is transitive.
+<-trans-revisited : ∀ (m n p) -> m < n -> n < p -> m < p
+<-trans-revisited m n p <-mn <-np with ≤-iff-<-2 m n <-mn | ≤-iff-<-2 n p <-np
+...                                  | ≤p                 | ≤q
+  with   (≤-trans ≤p (≤-succ n))
+...    | pf1
+  with   (≤-trans pf1 ≤q)
+...    | pf2                          = ≤-iff-<-1 m p pf2
