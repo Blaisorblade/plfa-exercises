@@ -1,0 +1,4 @@
+depend: standard-library
+include: ~/Src/Agda/defaults/agda-stdlib/
+       : ../Rel
+       : ../Nat
