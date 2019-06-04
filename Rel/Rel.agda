@@ -83,7 +83,7 @@ data Total (m n : ℕ) : Set where
   → m + p ≤ n + q
 +-mono-≤ m n p q m≤n p≤q  =  ≤-trans (+-monoˡ-≤ m n p m≤n) (+-monoʳ-≤ n p q p≤q)
 
--- exercise : show that multiplicatio is monotonic with regard to inequality
+-- exercise : show that multiplication is monotonic with regard to inequality
 *-mono-≤ : ∀ (m n p q : ℕ) -> m ≤ n -> p ≤ q -> m * p ≤ n * q
 *-mono-≤ .0 n p q z≤n pf2 = z≤n
 *-mono-≤ .(suc _) .(suc _) .0 q (s≤s {m} {n} pf1) z≤n rewrite *-zeroʳ m = z≤n
@@ -132,10 +132,7 @@ data Trichotomy (m n : ℕ) : Set where
 <-suc : ∀ (n : ℕ) -> n < suc n
 <-suc zero = z<s
 <-suc (suc n) = s<s (<-suc n)
-  
-+-mono-< : ∀ (m n p q : ℕ) -> m < n -> p < q -> m + p < n + q
-+-mono-< m n p q p1 p2 = {!<-trans (+-mono-<-L m n p1!}
-  
+
 +-mono-<-R : ∀ (m p q : ℕ) -> p < q -> m + p < m + q
 +-mono-<-R zero p q pf1 = pf1
 +-mono-<-R (suc m) p q pf1 = s<s (+-mono-<-R m p q pf1)
@@ -143,6 +140,11 @@ data Trichotomy (m n : ℕ) : Set where
 
 +-mono-<-L : ∀ (m n q : ℕ) -> m < n -> m + q < n + q
 +-mono-<-L m n q pf rewrite +-comm m q | +-comm n q = +-mono-<-R q m n pf
+
+  
++-mono-< : ∀ (m n p q : ℕ) -> m < n -> p < q -> m + p < n + q
++-mono-< m n p q <mn <pq = <-trans (m + p) (n + p) (n + q) (+-mono-<-L m n p <mn) (+-mono-<-R n p q <pq)
+
 
 --exercise: Show that suc m ≤ n implies m < n, and conversely.
 ≤-iff-<-1 : ∀ (m n : ℕ) -> suc m ≤ n -> m < n

@@ -3,7 +3,7 @@ module Ind where
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
-open import Nat
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
 
 
 +-assoc : ∀ (m n p : ℕ) -> (m + n) + p ≡ m + (n + p)
@@ -11,7 +11,7 @@ open import Nat
 +-assoc (suc m) n p rewrite +-assoc m n p = refl
 
 
-+-identity : ∀ (n : ℕ) -> n + zero ≡ n
++-identity : ∀ (n : ℕ) -> n + 0 ≡ n
 +-identity zero = refl
 +-identity (suc n) rewrite +-identity n = refl
 
