@@ -1,3 +1,4 @@
 depend: standard-library
 include: ../Nat
        : ../Rel
+       : ../Isomorphism

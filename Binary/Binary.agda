@@ -12,8 +12,8 @@ open Prod using (_×_; _,_)
 import Data.List as List
 open List using ([]; _∷_)
 open import Ind using (+-identity; +-succ)
-import Rel
 open import Rel using (_<_; z<s)
+open import Iso using (_≲_)
 
 data Bin : Set where
   nil : Bin
@@ -77,9 +77,14 @@ to-suc-inc nil = refl
 to-suc-inc (x0 b) = refl
 to-suc-inc (x1 b) rewrite (to-suc-inc b) | +-succ (to-nat b) (to-nat b) = refl
 
-to-from : ∀ {n : ℕ} -> to-nat (from-nat n) ≡ n
-to-from {zero} = refl
-to-from {suc n} rewrite to-suc-inc (from-nat n) | to-from {n} = refl
+to-from : ∀ (n : ℕ) -> to-nat (from-nat n) ≡ n
+to-from zero = refl
+to-from (suc n) rewrite to-suc-inc (from-nat n) | to-from n = refl
+
+-- exercise: establish that there is an embedding of ℕ into Bin.
+nat-embedding : ℕ ≲ Bin
+nat-embedding = record {to = from-nat ; from = to-nat; from∘to = to-from}
+
 
 pos-double : ∀ (n : ℕ) -> 0 < n -> 0 < n + n
 pos-double (suc n) p = z<s
