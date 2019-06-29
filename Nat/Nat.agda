@@ -93,3 +93,30 @@ ex5 = refl
 
 ex6 : 3 ∸ 5 ≡ 0
 ex6 = refl
+
+
+27+48 : 27 + 48 ≡ 75
+27+48 =
+  begin
+    27 + 48
+  ≡⟨⟩
+    suc (26 + 48)
+  ≡⟨⟩
+    suc (suc (25 + 48))
+  ≡⟨ etc ⟩
+    suc (suc (suc (suc (suc
+     (suc (suc (suc (suc (suc
+       (suc (suc (suc (suc (suc 
+         (suc (suc (suc (suc (suc
+           (suc (suc (suc (suc (suc
+             (suc (suc (0 + 48)))))))))))))))))))))))))))
+  ≡⟨⟩
+    75
+  ∎
+  where
+  etc : _
+  etc = refl
+
+
+
+  
