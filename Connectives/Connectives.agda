@@ -8,6 +8,7 @@ open import Function using (_∘_)
 open import Iso using (_≃_; _≲_; extensionality; _<=>_; <=>-eta-rule; ≃-trans)
 open Iso.≃-Reasoning
 open _<=>_ using (to; from)
+open _≃_ using (to; from; to∘from; from∘to)
 
 
 data _x_ (A B : Set) : Set where
@@ -118,6 +119,15 @@ data ⊥ : Set where
 
   l∘r : ∀ {A : Set} (a : A) -> l (r a) ≡ a
   l∘r a = refl
+
+
+-- with copatterns!
+⊥-identityʳ-co-patterns : ∀ {A : Set} -> A ⊎ ⊥ ≃ A
+to ⊥-identityʳ-co-patterns (inj₁ a) = a
+from ⊥-identityʳ-co-patterns = inj₁
+from∘to ⊥-identityʳ-co-patterns (inj₁ a) = refl
+to∘from ⊥-identityʳ-co-patterns _ = refl
+
 
 ⊥-identityˡ  : ∀ {A : Set} -> ⊥ ⊎ A ≃ A
 ⊥-identityˡ = ≃-trans ⊎-comm ⊥-identityʳ
