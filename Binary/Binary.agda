@@ -15,6 +15,7 @@ open import Ind using (+-identity; +-succ)
 open import Rel using (_<_; z<s)
 open import Iso using (_≲_)
 
+
 data Bin : Set where
   nil : Bin
   x0_ : Bin -> Bin
@@ -57,6 +58,17 @@ data Can : Bin -> Set where
   zero : Can (x0 nil)
   leading-x1 : ∀ {b : Bin} -> One b -> Can  b
 
+one-uniq : (b : Bin) -> (o o' : One b) -> o ≡ o'
+one-uniq (x0 b) (x0-there o) (x0-there o') = cong x0-there (one-uniq b o o')
+one-uniq (x1 .nil) is-one is-one = refl
+one-uniq (x1 b) (x1-there o) (x1-there o') = cong x1-there (one-uniq b o o')
+
+can-uniq : ∀ {b : Bin} -> (c c' : Can b) -> c ≡ c'
+can-uniq zero zero = refl
+can-uniq zero (leading-x1 (x0-there ()))
+can-uniq (leading-x1 (x0-there x)) zero = {!!}
+can-uniq (leading-x1 x) (leading-x1 y) = cong leading-x1 (one-uniq _ x y)
+
 
 inc-one : ∀ {b : Bin} -> One b -> One (inc b)
 inc-one is-one = x0-there is-one
@@ -68,9 +80,9 @@ inc-can zero = leading-x1 is-one
 inc-can (leading-x1 x) = leading-x1 (inc-one x)
 
 
-can-to-nat : ∀ {n : ℕ} -> Can (from-nat n)
-can-to-nat {zero} = zero
-can-to-nat {suc n} = inc-can (can-to-nat {n})
+can-from-nat : ∀ (n : ℕ) -> Can (from-nat n)
+can-from-nat (zero) = zero
+can-from-nat (suc n) = inc-can (can-from-nat n)
 
 to-suc-inc : ∀ (b : Bin) -> to-nat (inc b) ≡ suc (to-nat b)
 to-suc-inc nil = refl
